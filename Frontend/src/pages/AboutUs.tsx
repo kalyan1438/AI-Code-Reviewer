@@ -1,19 +1,21 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Moon, Sun } from "lucide-react";
-import { useTheme } from "@/components/ThemeProvider"; // ✅ use your theme context
+import {
+  ArrowLeft,
+  Moon,
+  Sun,
+  Github,
+  Linkedin,
+  Mail,
+  Code2,
+  Server,
+  Shield,
+} from "lucide-react";
+import { useTheme } from "@/components/ThemeProvider";
 
 interface AboutUsProps {
   onNavigate: (page: string) => void;
-}
-
-interface TeamMember {
-  name: string;
-  role: string;
-  email: string;
-  avatarUrl?: string;
-  bio: string;
 }
 
 const getInitials = (name: string) => {
@@ -25,34 +27,41 @@ const getInitials = (name: string) => {
 };
 
 export function AboutUs({ onNavigate }: AboutUsProps) {
-  const { theme, toggleTheme } = useTheme(); // ✅ from provider
+  const { theme, toggleTheme } = useTheme();
 
-  const teamMembers: TeamMember[] = [
+  const skills = [
+    "Java",
+    "Node.js",
+    "Express.js",
+    "React.js",
+    "TypeScript",
+    "MongoDB",
+    "Redis",
+    "Socket.IO",
+    "Docker",
+    "NGINX",
+    "AWS EC2",
+    "JWT",
+  ];
+
+  const highlights = [
     {
-      name: "Afreen Jahan",
-      role: "UI/UX Designer & Team Lead",
-      email: "afreen@gmail.com",
-      avatarUrl: "https://example.com/avatar1.png",
-      bio: "afreen specializes in creating beautiful and responsive user interfaces with React and Next.js.",
+      icon: <Server className="h-6 w-6" />,
+      title: "Distributed Systems",
+      description:
+        "Built scalable real-time applications using Redis Pub/Sub, Docker containers, and NGINX load balancing.",
     },
     {
-      name: "B. Abhiram",
-      role: "DB Engineer",
-      email: "abhiram@gmail.com",
-      bio: "Abhiram builds robust APIs and manages databases with a focus on performance and security.",
+      icon: <Shield className="h-6 w-6" />,
+      title: "Secure Communication",
+      description:
+        "Implemented JWT authentication and E2EE messaging using AES-GCM encryption with ECDH key exchange.",
     },
     {
-      name: "G. Kalyan Rao",
-      role: "Developer Lead",
-      email: "Kalyan@gmail.com",
-      avatarUrl: "https://example.com/avatar3.png",
-      bio: "Kalyan crafts intuitive and engaging user experiences with a keen eye for detail.",
-    },
-    {
-      name: "K. Abhigna",
-      role: "Documentation Maker",
-      email: "Abhigna@gmail.com",
-      bio: "Abhigna leads the team ensuring projects are delivered on time and meet quality standards.",
+      icon: <Code2 className="h-6 w-6" />,
+      title: "Problem Solving",
+      description:
+        "Solved 400+ LeetCode problems with strong focus on DSA and backend engineering concepts.",
     },
   ];
 
@@ -60,14 +69,14 @@ export function AboutUs({ onNavigate }: AboutUsProps) {
     <div
       className={`${
         theme === "dark"
-          ? "bg-[#000000] text-[#ffffff]"
-          : "bg-[#ffffff] text-[#000000]"
+          ? "bg-black text-white"
+          : "bg-white text-black"
       } min-h-screen transition-colors duration-500`}
     >
       {/* Header */}
       <div
         className={`border-b ${
-          theme === "dark" ? "border-[#333333]" : "border-[#e5e5e5]"
+          theme === "dark" ? "border-[#222222]" : "border-[#e5e5e5]"
         }`}
       >
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
@@ -81,11 +90,13 @@ export function AboutUs({ onNavigate }: AboutUsProps) {
               <ArrowLeft className="h-4 w-4" />
               Back to Home
             </Button>
-            <h1 className="text-2xl font-semibold">About Us</h1>
+
+            <h1 className="text-2xl font-bold">About Developer</h1>
           </div>
+
           <Button
             onClick={toggleTheme}
-            className="rounded-xl shadow-md hover:scale-105 transition-transform flex items-center gap-2"
+            className="rounded-xl flex items-center gap-2"
           >
             {theme === "dark" ? (
               <>
@@ -100,80 +111,193 @@ export function AboutUs({ onNavigate }: AboutUsProps) {
         </div>
       </div>
 
-      {/* Team Section */}
-      <div className="container mx-auto px-6 py-10">
+      {/* Hero Section */}
+      <div className="container mx-auto px-6 py-12">
         <Card
-          className={`rounded-2xl shadow-xl ${
+          className={`rounded-3xl overflow-hidden shadow-2xl ${
             theme === "dark"
               ? "bg-[#0a0a0a] border border-[#222222]"
               : "bg-[#fafafa] border border-[#dddddd]"
           }`}
         >
-          <CardHeader>
-            <CardTitle className="text-xl">Our Team</CardTitle>
-            <p
-              className={`text-sm ${
-                theme === "dark" ? "text-gray-400" : "text-gray-600"
-              }`}
-            >
-              Hover over a card to learn more about each member.
-            </p>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-6">
-              {teamMembers.map((member) => (
-                <div
-                  key={member.email}
-                  className={`group relative rounded-2xl border shadow-lg overflow-hidden
-                    transform transition-all duration-500 hover:scale-105 ${
-                      theme === "dark"
-                        ? "bg-[#111111] border-[#333333] hover:shadow-[#ffffff30]"
-                        : "bg-[#ffffff] border-[#dddddd] hover:shadow-lg"
-                    }`}
-                >
-                  {/* Avatar */}
-                  <div className="flex flex-col items-center p-6">
-                    <Avatar className="mb-4 h-20 w-20 border">
-                      <AvatarImage src={member.avatarUrl} alt={member.name} />
-                      <AvatarFallback>{getInitials(member.name)}</AvatarFallback>
-                    </Avatar>
+          <CardContent className="p-10">
+            <div className="flex flex-col lg:flex-row items-center gap-10">
+              {/* Avatar */}
+              <div className="flex flex-col items-center">
+                <Avatar className="h-36 w-36 border-4 border-gray-500 shadow-xl">
+                  <AvatarImage src="" alt="Kalyan Rao" />
+                  <AvatarFallback className="text-3xl font-bold">
+                    {getInitials("Kalyan Rao Gajulavarthi")}
+                  </AvatarFallback>
+                </Avatar>
+              </div>
 
-                    {/* Basic Info */}
-                    <h3 className="text-lg font-semibold text-center">
-                      {member.name}
-                    </h3>
-                    <p
-                      className={`text-sm text-center ${
-                        theme === "dark" ? "text-gray-400" : "text-gray-600"
+              {/* Content */}
+              <div className="flex-1 text-center lg:text-left">
+                <h2 className="text-4xl font-bold mb-3">
+                  Kalyan Rao Gajulavarthi
+                </h2>
+
+                <p
+                  className={`text-lg mb-6 ${
+                    theme === "dark" ? "text-gray-400" : "text-gray-700"
+                  }`}
+                >
+                  Backend-Focused Full Stack Developer passionate about
+                  distributed systems, scalable real-time applications, and
+                  modern developer tooling.
+                </p>
+
+                <div className="flex flex-wrap justify-center lg:justify-start gap-4 mb-8">
+                  <a
+                    href="mailto:kalyanrao135@gmail.com"
+                    target="_blank"
+                  >
+                    <Button className="rounded-xl gap-2">
+                      <Mail className="h-4 w-4" /> Contact
+                    </Button>
+                  </a>
+
+                  <a
+                    href="https://github.com/kalyan1438"
+                    target="_blank"
+                  >
+                    <Button
+                      variant="outline"
+                      className="rounded-xl gap-2"
+                    >
+                      <Github className="h-4 w-4" /> GitHub
+                    </Button>
+                  </a>
+
+                  <a
+                    href="https://linkedin.com/in/kalyan1438"
+                    target="_blank"
+                  >
+                    <Button
+                      variant="outline"
+                      className="rounded-xl gap-2"
+                    >
+                      <Linkedin className="h-4 w-4" /> LinkedIn
+                    </Button>
+                  </a>
+                </div>
+
+                {/* Skills */}
+                <div className="flex flex-wrap gap-3 justify-center lg:justify-start">
+                  {skills.map((skill) => (
+                    <span
+                      key={skill}
+                      className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                        theme === "dark"
+                          ? "bg-[#151515] border border-[#333333] text-gray-200"
+                          : "bg-white border border-[#dddddd] text-gray-700"
                       }`}
                     >
-                      {member.role}
-                    </p>
-                  </div>
-
-                  {/* Hover Overlay */}
-                  <div
-                    className={`absolute inset-0 flex flex-col justify-center items-center px-6 py-8 
-                               opacity-0 group-hover:opacity-100 
-                               transition-all duration-500 text-center ${
-                                 theme === "dark"
-                                   ? "bg-black/90 text-white"
-                                   : "bg-white/95 text-black"
-                               }`}
-                  >
-                    <p className="text-sm mb-4">{member.bio}</p>
-                    <a href={`mailto:${member.email}`}>
-                      <Button
-                        variant="secondary"
-                        size="sm"
-                        className="rounded-lg shadow-md hover:scale-105 transition-transform"
-                      >
-                        Contact
-                      </Button>
-                    </a>
-                  </div>
+                      {skill}
+                    </span>
+                  ))}
                 </div>
-              ))}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* About Section */}
+      <div className="container mx-auto px-6 pb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {highlights.map((item) => (
+            <Card
+              key={item.title}
+              className={`rounded-2xl transition-all duration-300 hover:scale-105 ${
+                theme === "dark"
+                  ? "bg-[#0f0f0f] border border-[#222222]"
+                  : "bg-[#fafafa] border border-[#dddddd]"
+              }`}
+            >
+              <CardContent className="p-8">
+                <div className="mb-5">{item.icon}</div>
+
+                <h3 className="text-xl font-semibold mb-3">{item.title}</h3>
+
+                <p
+                  className={`${
+                    theme === "dark" ? "text-gray-400" : "text-gray-600"
+                  } leading-relaxed`}
+                >
+                  {item.description}
+                </p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+
+      {/* Projects Section */}
+      <div className="container mx-auto px-6 pb-16">
+        <Card
+          className={`rounded-3xl ${
+            theme === "dark"
+              ? "bg-[#0a0a0a] border border-[#222222]"
+              : "bg-[#fafafa] border border-[#dddddd]"
+          }`}
+        >
+          <CardContent className="p-10">
+            <h2 className="text-3xl font-bold mb-8 text-center">
+              Featured Projects
+            </h2>
+
+            <div className="space-y-8">
+              {/* Project 1 */}
+              <div
+                className={`rounded-2xl p-6 border ${
+                  theme === "dark"
+                    ? "bg-[#111111] border-[#222222]"
+                    : "bg-white border-[#dddddd]"
+                }`}
+              >
+                <h3 className="text-2xl font-semibold mb-3">
+                  Distributed Real-Time Chat Application with E2EE
+                </h3>
+
+                <p
+                  className={`${
+                    theme === "dark" ? "text-gray-400" : "text-gray-600"
+                  } leading-relaxed`}
+                >
+                  Developed a distributed real-time communication platform using
+                  Socket.IO, Redis Pub/Sub, Dockerized backend containers, and
+                  NGINX load balancing. Implemented JWT authentication and
+                  end-to-end encrypted messaging using AES-GCM with ECDH-based
+                  secure session key exchange.
+                </p>
+              </div>
+
+              {/* Project 2 */}
+              <div
+                className={`rounded-2xl p-6 border ${
+                  theme === "dark"
+                    ? "bg-[#111111] border-[#222222]"
+                    : "bg-white border-[#dddddd]"
+                }`}
+              >
+                <h3 className="text-2xl font-semibold mb-3">
+                  CodeReviewer AI
+                </h3>
+
+                <p
+                  className={`${
+                    theme === "dark" ? "text-gray-400" : "text-gray-600"
+                  } leading-relaxed`}
+                >
+                  Built an AI-assisted code review platform supporting 6
+                  programming languages including Java, Python, C/C++,
+                  JavaScript, and TypeScript. Integrated Monaco Editor for
+                  in-browser coding, JWT authentication for secure access, and
+                  MongoDB for persistent review history storage.
+                </p>
+              </div>
             </div>
           </CardContent>
         </Card>
