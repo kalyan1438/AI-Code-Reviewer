@@ -18,5 +18,5 @@ app.use("/api/auth", authRoutes);
 app.use("/api/code", codeRoutes); // 🔒 protected
 app.use("/api/user",userRoutes);
 app.use("/api",health);
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000; // ready Deploye
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
