@@ -14,5 +14,6 @@ export interface AnalysisResult {
     performance: number;
     complexity: number;
     maintainability: number;
-  };
+  },
+  fixed_code: string;
 }

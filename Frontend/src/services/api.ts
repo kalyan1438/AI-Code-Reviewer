@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = 'https://ai-code-reviewer-backend-brd5.onrender.com/api';
 const REQUEST_TIMEOUT = 30000; // 30s for long AI responses
 const MAX_RETRIES = 3;
 
