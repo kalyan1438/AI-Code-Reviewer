@@ -1,13 +1,14 @@
 import express from "express";
 import { reviewCode } from "../services/aiService.js";
-
+import { protect } from "../middleware/auth.js";
+import CodeSubmission from "../models/CodeSubmission.js";
 const router = express.Router();
 
 // In-memory storage for submissions
 const submissions = {};
 
 // Submit code endpoint
-router.post("/submit", async (req, res) => {
+router.post("/submit", protect, async (req, res) => {
   const { code, language, title } = req.body;
   if (!code || !language) return res.status(400).json({ success: false, error: "Code and language are required" });
 
@@ -41,9 +42,31 @@ router.post("/submit", async (req, res) => {
       };
 
       submissions[submissionId] = { status: "completed", analysis: transformed };
+      await CodeSubmission.create({
+        user: req.user._id,
+        code,
+        language,
+        title: title || "Untitled",
+        status: "completed",
+        analysis: {
+          score: transformed.score,
+          issues: transformed.issues,
+          suggestions: transformed.suggestions,
+          metrics: transformed.metrics,
+          fixed_code: transformed.fixed_code,
+        }
+      });
     } catch (err) {
       console.error("AI review failed:", err.message);
       submissions[submissionId] = { status: "failed", analysis: null };
+      await CodeSubmission.create({
+        user: req.user._id,
+        code,
+        language,
+        title: title || "Untitled",
+        status: "failed",
+        analysis: null
+      }).catch(e => console.error("DB save failed:", e.message));
     }
   })();
 

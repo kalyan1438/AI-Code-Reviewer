@@ -1,17 +1,27 @@
 import express from 'express';
 import User from '../models/User.js';
 import CodeSubmission from '../models/CodeSubmission.js';
-import { authenticateToken } from '../middleware/auth.js';
+import { protect } from '../middleware/auth.js';
 
 const router = express.Router();
 
 // Get user dashboard statistics
-router.get('/dashboard', authenticateToken, async (req, res) => {
+router.get('/dashboard', protect, async (req, res) => {
   try {
     const userId = req.user.id;
 
     // Get user stats from CodeSubmission model
-    const stats = await CodeSubmission.getUserStats(userId);
+    const stats = await CodeSubmission.aggregate([
+  { $match: { user: userId } },
+  {
+    $group: {
+      _id: null,
+      totalSubmissions: { $sum: 1 },
+      averageScore: { $avg: "$analysis.score" },
+      highestScore: { $max: "$analysis.score" },
+    }
+  }
+]);
 
     // Get recent submissions
     const recentSubmissions = await CodeSubmission.find({ user: userId })
@@ -38,12 +48,12 @@ router.get('/dashboard', authenticateToken, async (req, res) => {
     res.json({
       success: true,
       data: {
-        stats,
-        recentSubmissions,
-        languageStats,
-        scoreTrends: scoreTrends.reverse() // Show oldest to newest for trend
-      }
-    });
+      stats: stats[0] || { totalSubmissions: 0, averageScore: 0, highestScore: 0 },
+      recentSubmissions,
+      languageStats,
+      scoreTrends: scoreTrends.reverse()
+  }
+});
 
   } catch (error) {
     console.error('❌ Dashboard error:', error);

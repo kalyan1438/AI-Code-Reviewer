@@ -1,7 +1,10 @@
-import fetch from "node-fetch";
+import Groq from "groq-sdk";
 
-const OLLAMA_URL ="http://localhost:11434/api/generate";
-const OLLAMA_MODEL ="qwen2.5-coder:3b";
+const client = new Groq({
+  apiKey: process.env.GROQ_API_KEY,
+});
+
+const GROQ_MODEL = "llama-3.1-8b-instant";
 
 /**
  * Safely parses JSON returned by the model
@@ -19,7 +22,7 @@ function safeJSONParse(text) {
 }
 
 /**
- * Sends code to Ollama and returns structured review
+ * Sends code to Groq and returns structured review
  */
 export async function reviewCode(code, language) {
   const prompt = `
@@ -52,21 +55,18 @@ ${code}
 `;
 
   try {
-    const response = await fetch(OLLAMA_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: OLLAMA_MODEL,
-        prompt,
-        stream: false,
-        temperature: 0.7 // deterministic
-      }),
-      timeout: 40000 // 60s for CPU
+    const response = await client.chat.completions.create({
+      model: GROQ_MODEL,
+      messages: [
+        {
+          role: "user",
+          content: prompt,
+        },
+      ],
+      temperature: 0.7,
     });
 
-    if (!response.ok) throw new Error(`Ollama API error: ${response.status}`);
-    const data = await response.json();
-    const text = data.response?.trim() || "";
+    const text = response.choices[0]?.message?.content?.trim() || "";
 
     const parsed = safeJSONParse(text);
     if (!parsed) {
@@ -79,22 +79,22 @@ ${code}
         performance_suggestions: [],
         readability_suggestions: [],
         fixed_code: "",
-        rating: 0
+        rating: 0,
       };
     }
     return parsed;
 
   } catch (err) {
-    console.error("Ollama request failed:", err.message);
+    console.error("Groq request failed:", err.message);
     return {
-      analysis: "Ollama review failed.",
+      analysis: "Groq review failed.",
       runtime_issues: [],
       bugs: [],
       security_issues: [],
       performance_suggestions: [],
       readability_suggestions: [],
       fixed_code: "",
-      rating: 0
+      rating: 0,
     };
   }
 }
